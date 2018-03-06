@@ -12,14 +12,11 @@ class MainActivity : AppCompatActivity() {
 
         val gameController = GameControllerImpl()
         gameController.startGame()
-
-        // what does a presenter do? it requests user action
-        // "start game" means that a match will be started
-        // the game controller will tell the game presenter to show the chooser view
-        // and set up the subscription for the match.
-
-        // game controller tells game presenter to present the request game state
-        // there should be an observable in the game presenter that the controller subscribes to to
-        // see when to start the match
     }
+
+    // What needs to happen for layout?
+    // Layout must be created
+    // View should be updated to show one color or the other
+    // View should prompt user who should go first
+
 }
