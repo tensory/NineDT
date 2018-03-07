@@ -5,6 +5,8 @@ buildscript {
         kotlin_version = '1.2.10'
         rxjava_version = '2.1.0'
         rxkotlin_version = '2.2.0'
+        retrofit_version = '2.3.0'
+        dagger2_version = '2.11'
     }
     repositories {
         google()
