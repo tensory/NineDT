@@ -1,16 +1,15 @@
 package net.tensory.ninedt.game
 
+import android.util.Log
 import io.reactivex.Observer
-import io.reactivex.subjects.Subject
 import net.tensory.ninedt.data.RemotePlayerController
 
 sealed class Player {
     abstract fun requestNextMove(currentState: MatchState)
 
-    class User(private val gamePresenter: GamePresenter, private val matchStateSubject: Subject<MatchState>) : Player() {
+    class User(private val gamePresenter: GamePresenter) : Player() {
         override fun requestNextMove(currentState: MatchState) {
-            gamePresenter.startUserTurn(matchStateSubject)
-
+            gamePresenter.startUserTurn(currentState)
         }
     }
 
@@ -18,6 +17,7 @@ sealed class Player {
                    private val matchStateObserver: Observer<MatchState>) : Player() {
         override fun requestNextMove(currentState: MatchState) {
             remotePlayerController.requestNextMove(currentState.moves).subscribe { gameState ->
+                Log.d("Computer", gameState.moves.toString())
                 matchStateObserver.onNext(gameState)
             }
         }

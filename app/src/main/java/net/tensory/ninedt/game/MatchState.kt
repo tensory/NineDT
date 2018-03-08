@@ -5,7 +5,9 @@ class MatchState(val moves: IntArray) {
         const val NUMBER_OF_ROWS = 4
     }
 
-    private val columns: Array<IntArray> = arrayOf(
+    constructor() : this(intArrayOf())
+
+    val columns: Array<IntArray> = arrayOf(
             IntArray(NUMBER_OF_ROWS),
             IntArray(NUMBER_OF_ROWS),
             IntArray(NUMBER_OF_ROWS),

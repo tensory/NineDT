@@ -15,7 +15,7 @@ class MatchController(private val gamePresenter: GamePresenter, remotePlayerCont
     private var nextTurnPlayerIndex: Int
 
     init {
-        val user = Player.User(gamePresenter, matchState)
+        val user = Player.User(gamePresenter)
         val computer = Player.Computer(remotePlayerController, matchState)
         players = if (userIsFirstPlayer) listOf(user, computer) else listOf(computer, user)
         nextTurnPlayerIndex = 0
@@ -47,7 +47,7 @@ class MatchController(private val gamePresenter: GamePresenter, remotePlayerCont
     }
 
     fun startMatch() {
-        players[nextTurnPlayerIndex].requestNextMove(matchState.value)
+        players[nextTurnPlayerIndex].requestNextMove(MatchState())
     }
 
     fun move(column: Int): Boolean {

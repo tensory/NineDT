@@ -39,6 +39,7 @@ dependencies {
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:3.10.0"
 
     // Dagger
     implementation "com.google.dagger:dagger:$dagger2_version"
@@ -48,5 +49,10 @@ dependencies {
     implementation "com.google.dagger:dagger-android-support:$dagger2_version"
     // if you use the support libraries
     kapt "com.google.dagger:dagger-android-processor:$dagger2_version"
+
+    // ViewModel + LiveData
+    implementation "android.arch.lifecycle:extensions:$arch_components_version"
+    kapt "android.arch.lifecycle:compiler:$arch_components_version"
+
 
 }

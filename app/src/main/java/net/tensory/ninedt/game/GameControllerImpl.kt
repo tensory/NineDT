@@ -1,6 +1,5 @@
 package net.tensory.ninedt.game
 
-import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import net.tensory.ninedt.data.RemotePlayerController
 
@@ -11,10 +10,9 @@ internal class GameControllerImpl(val presenter: GamePresenter, private val remo
 
     private val userIsPlayer1Subject: PublishSubject<Boolean> = PublishSubject.create()
     private val moveSubject: PublishSubject<Int> = PublishSubject.create()
-    private val playerOrderDisposable: Disposable
 
     init {
-        playerOrderDisposable = userIsPlayer1Subject.subscribe({ firstPlayer -> startMatch(firstPlayer) })
+        userIsPlayer1Subject.subscribe({ firstPlayer -> startMatch(firstPlayer) })
     }
 
     /**
@@ -36,9 +34,6 @@ internal class GameControllerImpl(val presenter: GamePresenter, private val remo
     }
 
     internal fun startMatch(userIsFirstPlayer: Boolean) {
-        // Once the match has started, unsubscribe from updates to the player selection.
-        playerOrderDisposable.dispose()
-
         val matchController = MatchController(presenter, remotePlayerController, userIsFirstPlayer)
         moveSubject.subscribe { lastPlayerMove -> matchController.move(lastPlayerMove) }
         matchController.startMatch()

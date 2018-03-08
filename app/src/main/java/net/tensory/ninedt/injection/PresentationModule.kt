@@ -7,7 +7,7 @@ import net.tensory.ninedt.game.GamePresenter
 import net.tensory.ninedt.game.GamePresenterImpl
 
 /**
- * Please add a docstring!
+ * Provide a game presenter.
  */
 @Module
 class PresentationModule {
