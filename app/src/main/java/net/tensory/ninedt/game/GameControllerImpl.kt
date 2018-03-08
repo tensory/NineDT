@@ -2,18 +2,19 @@ package net.tensory.ninedt.game
 
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
+import net.tensory.ninedt.data.RemotePlayerController
 
 /**
  * Please add a docstring!
  */
-class GameControllerImpl(val presenter: GamePresenter) : GameController {
+internal class GameControllerImpl(val presenter: GamePresenter, private val remotePlayerController: RemotePlayerController) : GameController {
 
-    private val firstPlayerObservable: PublishSubject<FirstPlayer> = PublishSubject.create()
-    private val moveObservable: PublishSubject<Int> = PublishSubject.create()
+    private val userIsPlayer1Subject: PublishSubject<Boolean> = PublishSubject.create()
+    private val moveSubject: PublishSubject<Int> = PublishSubject.create()
     private val playerOrderDisposable: Disposable
 
     init {
-        playerOrderDisposable = firstPlayerObservable.subscribe({ firstPlayer -> startMatch(firstPlayer) })
+        playerOrderDisposable = userIsPlayer1Subject.subscribe({ firstPlayer -> startMatch(firstPlayer) })
     }
 
     /**
@@ -23,23 +24,23 @@ class GameControllerImpl(val presenter: GamePresenter) : GameController {
      * Once that selection is made, play begins.
      */
     override fun startGame() {
-        presenter.requestPlayerOrder(firstPlayerObservable)
+        presenter.requestPlayerOrder(userIsPlayer1Subject)
     }
 
     override fun setUserGoesFirst(userGoesFirst: Boolean) {
-        firstPlayerObservable.onNext(if (userGoesFirst) FirstPlayer.User else FirstPlayer.Computer)
+        userIsPlayer1Subject.onNext(userGoesFirst)
     }
 
     override fun move(column: Int) {
-        moveObservable.onNext(column)
+        moveSubject.onNext(column)
     }
 
-    internal fun startMatch(firstPlayer: FirstPlayer) {
+    internal fun startMatch(userIsFirstPlayer: Boolean) {
         // Once the match has started, unsubscribe from updates to the player selection.
         playerOrderDisposable.dispose()
 
-        val matchController = MatchController(presenter, firstPlayer == FirstPlayer.User)
-        moveObservable.subscribe { lastPlayerMove -> matchController.move(lastPlayerMove) }
+        val matchController = MatchController(presenter, remotePlayerController, userIsFirstPlayer)
+        moveSubject.subscribe { lastPlayerMove -> matchController.move(lastPlayerMove) }
         matchController.startMatch()
     }
 }

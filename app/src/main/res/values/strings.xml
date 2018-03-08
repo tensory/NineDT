@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">NineDT</string>
+
+    <string name="who_should_go_first">Who should go first?</string>
+    <string name="user_goes_first">I\'ll go first</string>
+    <string name="computer_goes_first">Computer goes first</string>
 </resources>

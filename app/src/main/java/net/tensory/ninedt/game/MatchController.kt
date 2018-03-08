@@ -1,40 +1,13 @@
 package net.tensory.ninedt.game
 
-import io.reactivex.Observable
-import io.reactivex.Observer
 import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.Subject
+import net.tensory.ninedt.data.RemotePlayerController
 
 
 /**
  * Controller for a match.
  */
-class MatchController(private val gamePresenter: GamePresenter, userIsPlayer1: Boolean) {
-
-    interface RemotePlayerController {
-        fun requestNextMove(): Observable<MatchState>
-    }
-
-    sealed class Player {
-        abstract fun requestNextMove()
-
-        class User(private val gamePresenter: GamePresenter, private val matchStateSubject: Subject<MatchState>) : Player() {
-            override fun requestNextMove() {
-                gamePresenter.startUserTurn(matchStateSubject)
-
-            }
-        }
-
-        class Computer(private val remotePlayerController: RemotePlayerController,
-                       private val matchStateObserver: Observer<MatchState>) : Player() {
-            override fun requestNextMove() {
-                remotePlayerController.requestNextMove().subscribe { gameState ->
-                    matchStateObserver.onNext(gameState)
-                }
-            }
-
-        }
-    }
+class MatchController(private val gamePresenter: GamePresenter, remotePlayerController: RemotePlayerController, userIsFirstPlayer: Boolean) {
 
     private val matchState: BehaviorSubject<MatchState> = BehaviorSubject.create()
 
@@ -43,8 +16,8 @@ class MatchController(private val gamePresenter: GamePresenter, userIsPlayer1: B
 
     init {
         val user = Player.User(gamePresenter, matchState)
-        val computer = Player.Computer(RemotePlayerController(), matchState)
-        players = if (userIsPlayer1) listOf(user, computer) else listOf(computer, user)
+        val computer = Player.Computer(remotePlayerController, matchState)
+        players = if (userIsFirstPlayer) listOf(user, computer) else listOf(computer, user)
         nextTurnPlayerIndex = 0
 
         matchState.subscribe({ matchState ->
@@ -69,12 +42,12 @@ class MatchController(private val gamePresenter: GamePresenter, userIsPlayer1: B
 
             // if no win, update turn and request next move
             nextTurnPlayerIndex = if (nextTurnPlayerIndex == 1) 0 else 1
-            players[nextTurnPlayerIndex].requestNextMove()
+            players[nextTurnPlayerIndex].requestNextMove(matchState)
         })
     }
 
     fun startMatch() {
-        players[nextTurnPlayerIndex].requestNextMove()
+        players[nextTurnPlayerIndex].requestNextMove(matchState.value)
     }
 
     fun move(column: Int): Boolean {

@@ -7,7 +7,7 @@ import io.reactivex.Observer
  * Please add a docstring!
  */
 interface GamePresenter {
-    fun requestPlayerOrder(playerOrderObservable: Observable<FirstPlayer>)
+    fun requestPlayerOrder(playerOrderObservable: Observable<Boolean>)
 
     fun startUserTurn(matchStateObserver: Observer<MatchState>)
 

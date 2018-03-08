@@ -1,9 +1,10 @@
 package net.tensory.ninedt.game
 
-class MatchState(private val moves: List<Int>) {
+class MatchState(val moves: IntArray) {
     companion object {
         const val NUMBER_OF_ROWS = 4
     }
+
     private val columns: Array<IntArray> = arrayOf(
             IntArray(NUMBER_OF_ROWS),
             IntArray(NUMBER_OF_ROWS),

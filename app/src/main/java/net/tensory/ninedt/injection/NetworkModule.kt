@@ -10,7 +10,7 @@ import retrofit2.Retrofit
 import javax.inject.Singleton
 
 /**
- * Please add a docstring!
+ * Provide network-dependent services.
  */
 @Module
 class NetworkModule {
